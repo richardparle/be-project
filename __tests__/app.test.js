@@ -26,4 +26,12 @@ describe("GET /api/topics", () => {
         });
       });
   });
+  test.only("404: responds with an error message when the endpoint is incorrect", () => {
+    return request(app)
+      .get("/api/topix")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
+      });
+  });
 });
