@@ -2,6 +2,7 @@ const {
   fetchTopics,
   fetchArticleById,
   updateArticleById,
+  fetchUsers,
 } = require("../models/articles.models");
 
 exports.getTopics = (req, res, next) => {
@@ -19,7 +20,6 @@ exports.getArticleById = (req, res, next) => {
       res.status(200).send({ article });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -33,4 +33,14 @@ exports.patchArticleById = (req, res, next) => {
       res.status(200).send({ msg: data });
     })
     .catch((err) => next(err));
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers().then((users) => {
+    let userArr = [];
+    users.forEach((user) => {
+      userArr.push(user);
+    });
+    res.status(200).send(userArr);
+  });
 };

@@ -53,7 +53,7 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-  test.only('400: responds with "bad request" if article_id is not an integer', () => {
+  test('400: responds with "bad request" if article_id is not an integer', () => {
     return request(app)
       .get("/api/articles/five")
       .expect(400)
@@ -98,6 +98,30 @@ describe("PATCH /api/articles/:article_id", () => {
       .then(({ body }) => {
         console.log(body);
         expect(body.msg).toBe("Article not found");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: ", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual([
+          { username: "butter_bridge" },
+          { username: "icellusedkars" },
+          { username: "rogersop" },
+          { username: "lurker" },
+        ]);
+      });
+  });
+  test("404: responds with an error message when the endpoint is incorrect", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
       });
   });
 });

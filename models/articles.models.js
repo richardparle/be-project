@@ -21,10 +21,15 @@ exports.updateArticleById = (articleId, inc_votes) => {
       [inc_votes, articleId]
     )
     .then((data) => {
-      console.log(data.rows);
       if (data.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Article not found" });
       }
       return data.rows[0];
     });
+};
+
+exports.fetchUsers = () => {
+  return db.query(`SELECT username from users;`).then((usernames) => {
+    return usernames.rows;
+  });
 };

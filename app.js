@@ -1,9 +1,7 @@
 const express = require("express");
-const { send } = require("express/lib/response");
 const app = express();
 const {
   getTopics,
-  pathNotFoundErr,
   getArticleById,
   patchArticleById,
   getUsers,
@@ -14,6 +12,7 @@ app.use(express.json());
 // GET requests
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/users", getUsers);
 
 // PATCH requests
 app.patch("/api/articles/:article_id", patchArticleById);
