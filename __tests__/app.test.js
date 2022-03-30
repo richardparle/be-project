@@ -96,14 +96,13 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 5 })
       .expect(404)
       .then(({ body }) => {
-        console.log(body);
         expect(body.msg).toBe("Article not found");
       });
   });
 });
 
 describe("GET /api/users", () => {
-  test("200: ", () => {
+  test("200: responds with an array of objects, each with the property 'username'", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
