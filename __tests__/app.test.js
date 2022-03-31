@@ -160,33 +160,3 @@ describe("GET /api/articles/:article_id (comment count)", () => {
       });
   });
 });
-describe("GET /api/articles", () => {
-  test("200: responds with an array of articles containing 'slug' and 'description' properties", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then((res) => {
-        expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles).toHaveLength(12);
-        res.body.articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            comment_count: expect.any(Number),
-          });
-        });
-      });
-  });
-  test("404: responds with an error message when the endpoint is incorrect", () => {
-    return request(app)
-      .get("/api/articlez")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("Path not found");
-      });
-  });
-});
