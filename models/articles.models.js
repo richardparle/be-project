@@ -9,7 +9,7 @@ exports.fetchTopics = () => {
 exports.fetchArticleById = async (articleId) => {
   const result1 = await db.query(
     `SELECT articles.*,
-     COUNT(comment_id) AS comment_count
+     COUNT(comment_id) :: int AS comment_count
      FROM articles
      LEFT JOIN comments
      ON comments.article_id = articles.article_id
@@ -43,4 +43,19 @@ exports.fetchUsers = () => {
   return db.query(`SELECT username from users;`).then((usernames) => {
     return usernames.rows;
   });
+};
+
+exports.fetchArticles = () => {
+  return db
+    .query(
+      `SELECT articles.*,
+  COUNT(comment_id) :: int AS comment_count
+  FROM articles
+  LEFT JOIN comments
+  ON comments.article_id = articles.article_id
+  GROUP BY articles.article_id ORDER BY created_at DESC;`
+    )
+    .then((data) => {
+      return data.rows;
+    });
 };

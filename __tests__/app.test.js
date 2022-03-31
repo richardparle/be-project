@@ -53,14 +53,14 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-});
-test('400: responds with "bad request" if article_id is not an integer', () => {
-  return request(app)
-    .get("/api/articles/five")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("Bad request");
-    });
+  test('400: responds with "bad request" if article_id is not an integer', () => {
+    return request(app)
+      .get("/api/articles/five")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
 });
 
 describe("PATCH /api/articles/:article_id", () => {
@@ -139,7 +139,7 @@ describe("GET /api/articles/:article_id (comment count)", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
-          comment_count: "11",
+          comment_count: 11,
         });
       });
   });
@@ -157,6 +157,36 @@ describe("GET /api/articles/:article_id (comment count)", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Path not found");
+      });
+  });
+});
+describe("GET /api/articles", () => {
+  test("200: responds with an array of articles containing 'slug' and 'description' properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles).toHaveLength(12);
+        res.body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("404: responds with an error message when the endpoint is incorrect", () => {
+    return request(app)
+      .get("/api/articlez")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
       });
   });
 });
