@@ -198,6 +198,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/5/comments")
       .expect(200)
       .then((res) => {
+        expect(res.body.comments).toHaveLength(2);
         expect(res.body.comments).toEqual([
           {
             comment_id: 14,
@@ -230,6 +231,14 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Path not found");
+      });
+  });
+  test("404: responds with an error message when the endpoint is not found", () => {
+    return request(app)
+      .get("/api/articles/500/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Article not found");
       });
   });
 });
