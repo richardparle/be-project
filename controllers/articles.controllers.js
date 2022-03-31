@@ -41,3 +41,14 @@ exports.getUsers = (req, res, next) => {
     res.status(200).send(users);
   });
 };
+
+exports.getArticles = (req, res, next) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+};
