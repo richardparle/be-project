@@ -59,3 +59,17 @@ exports.fetchArticles = () => {
       return data.rows;
     });
 };
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `SELECT comment_id, votes, created_at, author, body from comments WHERE article_id = $1;`,
+      [article_id]
+    )
+    .then((data) => {
+      if (data.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
+      return data.rows;
+    });
+};

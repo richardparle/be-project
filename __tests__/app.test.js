@@ -160,6 +160,7 @@ describe("GET /api/articles/:article_id (comment count)", () => {
       });
   });
 });
+
 describe("GET /api/articles", () => {
   test("200: responds with an array of articles containing 'slug' and 'description' properties", () => {
     return request(app)
@@ -187,6 +188,57 @@ describe("GET /api/articles", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Path not found");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments for the given article_id ", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toHaveLength(2);
+        expect(res.body.comments).toEqual([
+          {
+            comment_id: 14,
+            votes: 16,
+            created_at: "2020-06-09T05:00:00.000Z",
+            author: "icellusedkars",
+            body: "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
+          },
+          {
+            comment_id: 15,
+            votes: 1,
+            created_at: "2020-11-24T00:08:00.000Z",
+            author: "butter_bridge",
+            body: "I am 100% sure that we're not completely sure.",
+          },
+        ]);
+      });
+  });
+  test('400: responds with "bad request" if article_id is not an integer', () => {
+    return request(app)
+      .get("/api/articles/five/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: responds with an error message when the endpoint is incorrect", () => {
+    return request(app)
+      .get("/api/articlez/5/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
+      });
+  });
+  test("404: responds with an error message when the endpoint is not found", () => {
+    return request(app)
+      .get("/api/articles/500/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Article not found");
       });
   });
 });
