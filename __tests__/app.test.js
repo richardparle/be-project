@@ -139,7 +139,7 @@ describe("GET /api/articles/:article_id (comment count)", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
-          comment_count: 11,
+          comment_count: "11",
         });
       });
   });
@@ -151,9 +151,9 @@ describe("GET /api/articles/:article_id (comment count)", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-  test('404: responds with an error message when the endpoint is incorrect"', () => {
+  test('404: responds with an error message for VALID but NON-EXISTENT article_id"', () => {
     return request(app)
-      .get("/api/articls/5")
+      .get("/api/articles/5000")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Path not found");
