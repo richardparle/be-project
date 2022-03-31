@@ -6,12 +6,25 @@ exports.fetchTopics = () => {
   });
 };
 
-exports.fetchArticleById = (articleId) => {
-  return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [articleId])
-    .then((data) => {
-      return data.rows[0];
-    });
+exports.fetchArticleById = async (articleId) => {
+  const result1 = await db.query(
+    `SELECT articles.article_id 
+    FROM comments 
+    INNER JOIN articles
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1;`,
+    [articleId]
+  );
+  const result2 = await db.query(
+    `SELECT * FROM articles WHERE article_id = $1;`,
+    [articleId]
+  );
+
+  const totalComments = result1.rows.length;
+  const articleObj = result2.rows[0];
+  articleObj.comment_count = totalComments;
+
+  return articleObj;
 };
 
 exports.updateArticleById = (articleId, inc_votes) => {
