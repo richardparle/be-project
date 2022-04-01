@@ -285,7 +285,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(res.body.msg).toBe("Path not found");
       });
   });
-  test("404: responds with an error message when the endpoint is not found ", () => {
+  test("404: responds with an error message when when the article_id doesn't exist", () => {
     return request(app)
       .post("/api/articles/500/comments")
       .send({
