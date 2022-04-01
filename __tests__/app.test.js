@@ -6,9 +6,7 @@ const testData = require("../db/data/test-data/index");
 
 beforeEach(() => seed(testData));
 
-afterAll(() => {
-  if (db.end) db.end();
-});
+afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
   test("200: responds with an array of topics containing 'slug' and 'description' properties", () => {
@@ -236,6 +234,64 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("404: responds with an error message when the endpoint is not found", () => {
     return request(app)
       .get("/api/articles/500/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Article not found");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "icellusedkars",
+        body: "Hello",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.data).toEqual({
+          comment_id: 19,
+          body: "Hello",
+          article_id: 1,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("400: responds with 'bad request' if article_id is not an integer", () => {
+    return request(app)
+      .post("/api/articles/five/comments")
+      .send({
+        username: "icellusedkars",
+        body: "Hello",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: responds with an error message when the endpoint is incorrect", () => {
+    return request(app)
+      .post("/api/articlez/5/comments")
+      .send({
+        username: "icellusedkars",
+        body: "Hello",
+      })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Path not found");
+      });
+  });
+  test("404: responds with an error message when the endpoint is not found ", () => {
+    return request(app)
+      .post("/api/articles/500/comments")
+      .send({
+        username: "icellusedkars",
+        body: "Hello",
+      })
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Article not found");

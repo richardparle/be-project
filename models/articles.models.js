@@ -73,3 +73,21 @@ exports.fetchCommentsByArticleId = (article_id) => {
       return data.rows;
     });
 };
+
+exports.sendCommentByArticleId = async (username, body, article_id) => {
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+  const comment = await db.query(
+    `INSERT INTO comments
+      (body, article_id, author)
+      VALUES
+      ($1, $2, $3)
+      RETURNING *;`,
+    [body, article_id, username]
+  );
+  if (!comment || !comment.rows.length) {
+    return Promise.reject({ status: 500, msg: "Unable to post comment" });
+  }
+  return comment.rows[0];
+};
