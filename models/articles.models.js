@@ -1,21 +1,15 @@
 const db = require("../db/connection");
 
-exports.fetchTopics = () => {
-  return db.query(`SELECT * FROM topics;`).then((data) => {
-    return data.rows;
-  });
-};
-
 exports.fetchArticleById = async (articleId) => {
   const result1 = await db.query(
     `SELECT articles.*,
-     COUNT(comment_id) :: int AS comment_count
-     FROM articles
-     LEFT JOIN comments
-     ON comments.article_id = articles.article_id
-     WHERE articles.article_id = $1
-     GROUP BY articles.article_id
-     LIMIT 1;`,
+      COUNT(comment_id) :: int AS comment_count
+      FROM articles
+      LEFT JOIN comments
+      ON comments.article_id = articles.article_id
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id
+      LIMIT 1;`,
     [articleId]
   );
   if (result1.rows.length === 0) {
@@ -39,55 +33,17 @@ exports.updateArticleById = (articleId, inc_votes) => {
     });
 };
 
-exports.fetchUsers = () => {
-  return db.query(`SELECT username from users;`).then((usernames) => {
-    return usernames.rows;
-  });
-};
-
 exports.fetchArticles = () => {
   return db
     .query(
       `SELECT articles.*,
-   COUNT(comment_id) :: int AS comment_count
-   FROM articles
-   LEFT JOIN comments
-   ON comments.article_id = articles.article_id
-   GROUP BY articles.article_id ORDER BY created_at DESC;`
+    COUNT(comment_id) :: int AS comment_count
+    FROM articles
+    LEFT JOIN comments
+    ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id ORDER BY created_at DESC;`
     )
     .then((data) => {
       return data.rows;
     });
-};
-
-exports.fetchCommentsByArticleId = (article_id) => {
-  return db
-    .query(
-      `SELECT comment_id, votes, created_at, author, body from comments WHERE article_id = $1;`,
-      [article_id]
-    )
-    .then((data) => {
-      if (data.rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Article not found" });
-      }
-      return data.rows;
-    });
-};
-
-exports.sendCommentByArticleId = async (username, body, article_id) => {
-  if (!username || !body) {
-    return Promise.reject({ status: 400, msg: "Bad request" });
-  }
-  const comment = await db.query(
-    `INSERT INTO comments
-      (body, article_id, author)
-      VALUES
-      ($1, $2, $3)
-      RETURNING *;`,
-    [body, article_id, username]
-  );
-  if (!comment || !comment.rows.length) {
-    return Promise.reject({ status: 500, msg: "Unable to post comment" });
-  }
-  return comment.rows[0];
 };
