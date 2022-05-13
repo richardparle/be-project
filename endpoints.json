@@ -19,9 +19,101 @@
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": "2022-01-01T20:11:00.000Z"
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "responds with an object containg the following properties: author, title, article_id, body, topic, created_at, votes",
+    "queries": ["articleId"],
+    "exampleResponse": {
+      "comment_id": 1,
+      "votes": 1,
+      "created_at": "2022-01-01T20:11:00.000Z",
+      "author": "rich",
+      "body": "sample body"
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "responds with the updated article",
+    "queries": ["article_id", "inc_votes"],
+    "exampleResponse": {
+      "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 105
+    }
+  },
+  "GET /api/users": {
+    "description": "responds with an array of objects, each with the property 'username'",
+    "queries": [],
+    "exampleResponse":
+      [
+        {
+          "username": "rich"
+        }
+      ]
+  },
+  "GET /api/articles/:article_id (comment count)": {
+    "description": "responds with an object containg a 'comment_count' property",
+    "queries": ["article_id"],
+    "exampleResponse": {
+      "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 100,
+          "comment_count": 11
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "Responds with an array of comments for the given article_id",
+    "queries": [],
+    "exampleResponse":
+      [
+        {
+          "comment_id": 1,
+          "votes": 10,
+          "created_at": "2022-10-9",
+          "author": "rich",
+          "body": "sample body"
+        }
+      ]
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "responds with the posted comment",
+    "queries": ["username", "body", "article_id"],
+    "exampleResponse": "Hello"
+  },
+  "GET /api/articles (queries)": {
+    "description": "Responds with an array of comments for the given article_id",
+    "queries": ["sort_by", "topic", "order"],
+    "exampleResponse":
+      [
+        {
+          "comment_id": 14,
+          "votes": 16,
+          "created_at": "2020-06-09T05:00:00.000Z",
+          "author": "icellusedkars",
+          "body": "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge."
+        },
+        {
+          "comment_id": 15,
+          "votes": 1,
+          "created_at": "2020-11-24T00:08:00.000Z",
+          "author": "butter_bridge",
+          "body": "I am 100% sure that we're not completely sure."
+        }
+      ]
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "sorts the articles by the column, defaulting to desc order on date",
+    "queries": ["comment_id"]
   }
 }

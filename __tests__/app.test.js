@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const data = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 
@@ -165,9 +166,9 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then((res) => {
-        expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles).toHaveLength(12);
-        res.body.articles.forEach((article) => {
+        expect(res.body).toBeInstanceOf(Array);
+        expect(res.body).toHaveLength(12);
+        res.body.forEach((article) => {
           expect(article).toMatchObject({
             author: expect.any(String),
             title: expect.any(String),
@@ -191,7 +192,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: Responds with an array of comments for the given article_id ", () => {
+  test("200: Responds with an array of comments for the given article_id", () => {
     return request(app)
       .get("/api/articles/5/comments")
       .expect(200)
@@ -251,14 +252,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then((res) => {
-        expect(res.body.data).toEqual({
-          comment_id: 19,
-          body: "Hello",
-          article_id: 1,
-          author: "icellusedkars",
-          votes: 0,
-          created_at: expect.any(String),
-        });
+        expect(res.body.data.body).toEqual("Hello");
       });
   });
   test("400: responds with 'bad request' if article_id is not an integer", () => {
@@ -295,6 +289,85 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Article not found");
+      });
+  });
+});
+
+describe("GET /api/articles (queries)", () => {
+  test("200: sorts the articles by the column, defaulting to desc order on date", () => {
+    return request(app)
+      .get("/api/articles?sort_by=date")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("200: order can either asc or desc", () => {
+    return request(app)
+      .get("/api/articles?sort_by=date&order=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("200: filter the articles by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.length).toBe(1);
+      });
+  });
+  test("400: invalid column to sort_by", () => {
+    return request(app)
+      .get("/api/articles?sort_by=month")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Please enter a valid sort_by query");
+      });
+  });
+  test("400: invalid order query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=date&order=down")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Please enter a valid order query");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: delete the given comment", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {});
+  });
+  test("400: comment_id cannot exist", () => {
+    return request(app)
+      .delete("/api/comments/five")
+      .expect(400)
+      .then(() => {});
+  });
+  test("404: comment_id could exist, but doesn't", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(() => {});
+  });
+});
+
+describe("GET/api", () => {
+  test("200: returns JSON object containing endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((result) => {
+        expect(result.body).toEqual(data);
       });
   });
 });
