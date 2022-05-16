@@ -18,7 +18,7 @@ If you would like a local copy of the API, please follow the below instructions:
 
 - Fork it to your GitHub
 - Clone the link
-- Run the command "git clone (insert clone address here"
+- Run the command "git clone (insert clone address here)"
 - Run npm install
 - Run npm setup-dbs
 
