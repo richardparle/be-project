@@ -10,7 +10,7 @@ Link to the hosted version: https://backend-project-rp.herokuapp.com/api/
 
 ## Summary
 
-Using the Javascript and SQL, I have set up a restful API to perform GET, PATCH, POST and DELETE requests to the PostgreSql database.
+Using Javascript and SQL, I have set up a restful API to perform GET, PATCH, POST and DELETE requests to the PostgreSql database.
 
 # Setup
 
