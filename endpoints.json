@@ -26,7 +26,7 @@
   },
   "GET /api/articles/:article_id": {
     "description": "responds with an object containg the following properties: author, title, article_id, body, topic, created_at, votes",
-    "queries": ["articleId"],
+    "queries": [],
     "exampleResponse": {
       "comment_id": 1,
       "votes": 1,
@@ -37,7 +37,7 @@
   },
   "PATCH /api/articles/:article_id": {
     "description": "responds with the updated article",
-    "queries": ["article_id", "inc_votes"],
+    "queries": [],
     "exampleResponse": {
       "article_id": 1,
           "title": "Living in the shadow of a great man",
@@ -46,6 +46,9 @@
           "body": "I find this existence challenging",
           "created_at": "2020-07-09T20:11:00.000Z",
           "votes": 105
+    },
+    "exampleRequest": {
+      "inc_votes": 1
     }
   },
   "GET /api/users": {
@@ -88,29 +91,11 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "responds with the posted comment",
-    "queries": ["username", "body", "article_id"],
-    "exampleResponse": "Hello"
-  },
-  "GET /api/articles (queries)": {
-    "description": "Responds with an array of comments for the given article_id",
-    "queries": ["sort_by", "topic", "order"],
-    "exampleResponse":
-      [
-        {
-          "comment_id": 14,
-          "votes": 16,
-          "created_at": "2020-06-09T05:00:00.000Z",
-          "author": "icellusedkars",
-          "body": "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge."
-        },
-        {
-          "comment_id": 15,
-          "votes": 1,
-          "created_at": "2020-11-24T00:08:00.000Z",
-          "author": "butter_bridge",
-          "body": "I am 100% sure that we're not completely sure."
-        }
-      ]
+    "queries": [],
+    "exampleResponse": {
+      "username": "icellusedkars",
+      "body": "Hello"
+    }
   },
   "DELETE /api/comments/:comment_id": {
     "description": "sorts the articles by the column, defaulting to desc order on date",
